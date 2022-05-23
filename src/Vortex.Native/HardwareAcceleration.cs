@@ -59,7 +59,7 @@ public static class Crc32C
     {
         if (data.IsEmpty)
         {
-            return seed ^ 0xFFFFFFFF;
+            return seed;
         }
 
         if (Crc32.Arm64.IsSupported)
