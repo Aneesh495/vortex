@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Vortex.Native\Vortex.Native.csproj" />
+    <ProjectReference Include="..\..\src\Vortex.Core\Vortex.Core.gsproj" />
   </ItemGroup>
 
 </Project>

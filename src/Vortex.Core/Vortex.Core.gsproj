@@ -1,0 +1,16 @@
+<Project Sdk="Gsharp.NET.Sdk/0.5.212">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Vortex.Core</RootNamespace>
+    <PackageId>Vortex.Core</PackageId>
+    <Authors>Aneesh Parthasarathy</Authors>
+    <Description>Core primitives, record formats, memory allocators, and codecs for the Vortex engine.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vortex.Native\Vortex.Native.csproj" />
+  </ItemGroup>
+
+</Project>
