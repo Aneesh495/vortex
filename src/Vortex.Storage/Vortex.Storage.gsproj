@@ -1,0 +1,17 @@
+<Project Sdk="Gsharp.NET.Sdk/0.5.212">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Vortex.Storage</RootNamespace>
+    <PackageId>Vortex.Storage</PackageId>
+    <Authors>Aneesh Parthasarathy</Authors>
+    <Description>High-performance append-only commit log, memory-mapped sparse indices, and log cleaner for Vortex.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vortex.Core\Vortex.Core.gsproj" />
+    <ProjectReference Include="..\Vortex.Native\Vortex.Native.csproj" />
+  </ItemGroup>
+
+</Project>
