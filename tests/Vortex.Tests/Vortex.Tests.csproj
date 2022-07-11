@@ -22,6 +22,7 @@
     <ProjectReference Include="..\..\src\Vortex.Native\Vortex.Native.csproj" />
     <ProjectReference Include="..\..\src\Vortex.Core\Vortex.Core.gsproj" />
     <ProjectReference Include="..\..\src\Vortex.Storage\Vortex.Storage.gsproj" />
+    <ProjectReference Include="..\..\src\Vortex.Replication\Vortex.Replication.gsproj" />
   </ItemGroup>
 
 </Project>
