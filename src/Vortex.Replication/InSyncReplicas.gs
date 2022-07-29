@@ -42,7 +42,8 @@ class PartitionReplicaCoordinator {
             state.LogEndOffset = followerLEO
             state.LastFetchTimestampMs = currentTimeMs
 
-            var leaderState = Replicas[LeaderId]
+            var leaderState ReplicaState? = nil
+            Replicas.TryGetValue(LeaderId, out leaderState)
             var leaderLEO int64 = 0
             if leaderState != nil {
                 leaderLEO = leaderState.LogEndOffset
@@ -60,9 +61,14 @@ class PartitionReplicaCoordinator {
             var newHW int64 = leaderLEO
             for i in 0 ... Isr.Count {
                 var memberId int32 = Isr[i]
-                var mState = Replicas[memberId]
-                if mState != nil && mState.LogEndOffset < newHW {
-                    newHW = mState.LogEndOffset
+                var mState ReplicaState? = nil
+                Replicas.TryGetValue(memberId, out mState)
+                var mLeo int64 = 0
+                if mState != nil {
+                    mLeo = mState.LogEndOffset
+                }
+                if mLeo < newHW {
+                    newHW = mLeo
                 }
             }
 
@@ -77,8 +83,9 @@ class PartitionReplicaCoordinator {
     // Updates the leader's own Log End Offset when a local batch append occurs.
     func RecordLeaderLEO(newLeaderLEO int64, currentTimeMs int64) int64 {
         lock SyncLock {
-            var leaderState = Replicas[LeaderId]
-            if leaderState == nil {
+            var leaderState ReplicaState? = nil
+            var found bool = Replicas.TryGetValue(LeaderId, out leaderState)
+            if !found || leaderState == nil {
                 leaderState = ReplicaState{}
                 leaderState.ReplicaId = LeaderId
                 Replicas[LeaderId] = leaderState
@@ -98,9 +105,14 @@ class PartitionReplicaCoordinator {
             var newHW int64 = newLeaderLEO
             for i in 0 ... Isr.Count {
                 var memberId int32 = Isr[i]
-                var mState = Replicas[memberId]
-                if mState != nil && mState.LogEndOffset < newHW {
-                    newHW = mState.LogEndOffset
+                var mState ReplicaState? = nil
+                Replicas.TryGetValue(memberId, out mState)
+                var mLeo int64 = 0
+                if mState != nil {
+                    mLeo = mState.LogEndOffset
+                }
+                if mLeo < newHW {
+                    newHW = mLeo
                 }
             }
 
@@ -125,8 +137,9 @@ class PartitionReplicaCoordinator {
                     continue
                 }
 
-                var state = Replicas[replicaId]
-                if state != nil {
+                var state ReplicaState? = nil
+                var found bool = Replicas.TryGetValue(replicaId, out state)
+                if found && state != nil {
                     var lag int64 = currentTimeMs - state.LastCaughtUpTimestampMs
                     if lag > MaxLagMs {
                         evicted.Add(replicaId)
