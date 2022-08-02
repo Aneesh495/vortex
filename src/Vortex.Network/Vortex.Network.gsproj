@@ -1,0 +1,18 @@
+<Project Sdk="Gsharp.NET.Sdk/0.5.212">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Vortex.Network</RootNamespace>
+    <PackageId>Vortex.Network</PackageId>
+    <Authors>Aneesh Parthasarathy</Authors>
+    <Description>Zero-allocation binary wire protocol framing, async socket pipeline, and CSP channel networking for Vortex.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vortex.Core\Vortex.Core.gsproj" />
+    <ProjectReference Include="..\Vortex.Storage\Vortex.Storage.gsproj" />
+    <ProjectReference Include="..\Vortex.Native\Vortex.Native.csproj" />
+  </ItemGroup>
+
+</Project>
