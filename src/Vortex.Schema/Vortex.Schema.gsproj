@@ -1,0 +1,18 @@
+<Project Sdk="Gsharp.NET.Sdk/0.5.212">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageId>Vortex.Schema</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Aneesh Krishna</Authors>
+    <Description>Schema Registry, dynamic binary codecs, and schema evolution compatibility validator for Vortex.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Vortex.Core\Vortex.Core.gsproj" />
+  </ItemGroup>
+
+</Project>

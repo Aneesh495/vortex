@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -26,6 +26,7 @@
     <ProjectReference Include="..\..\src\Vortex.Network\Vortex.Network.gsproj" />
     <ProjectReference Include="..\..\src\Vortex.Coordination\Vortex.Coordination.gsproj" />
     <ProjectReference Include="..\..\src\Vortex.Processing\Vortex.Processing.gsproj" />
+    <ProjectReference Include="..\..\src\Vortex.Schema\Vortex.Schema.gsproj" />
   </ItemGroup>
 
 </Project>
