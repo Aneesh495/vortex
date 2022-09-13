@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Vortex.Client/Vortex.Client.gsproj" Type="f1526b4d-c1a8-4b42-b2f7-48da6f9ca033" />
     <Project Path="src/Vortex.Coordination/Vortex.Coordination.gsproj" Type="f1526b4d-c1a8-4b42-b2f7-48da6f9ca033" />
     <Project Path="src/Vortex.Core/Vortex.Core.gsproj" Type="f1526b4d-c1a8-4b42-b2f7-48da6f9ca033" />
     <Project Path="src/Vortex.Native/Vortex.Native.csproj" />
