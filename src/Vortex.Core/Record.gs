@@ -10,9 +10,9 @@ import System.Collections.Generic
 class Record {
     var Offset int64
     var Timestamp int64
-    var Key []byte
-    var Value []byte
-    var Headers List[RecordHeader]
+    var Key []byte = [0]byte
+    var Value []byte = [0]byte
+    var Headers List[RecordHeader] = List[RecordHeader]()
 
     func IsTombstone() bool {
         return Value.Length == 0
@@ -34,9 +34,13 @@ class Record {
 
     func Size() int32 {
         var headerBytes int32 = 0
-        for i in 0 ... Headers.Count {
-            headerBytes = headerBytes + Headers[i].Size()
+        if Headers != nil {
+            for i in 0 ... Headers.Count {
+                headerBytes = headerBytes + Headers[i].Size()
+            }
         }
-        return 8 + 8 + 4 + Key.Length + 4 + Value.Length + headerBytes
+        var kLen int32 = Key != nil ? Key.Length : 0
+        var vLen int32 = Value != nil ? Value.Length : 0
+        return 8 + 8 + 4 + kLen + 4 + vLen + headerBytes
     }
 }

@@ -39,7 +39,7 @@ class ConsumerRecord {
 
 // High-level consumer maintaining partition assignments, poll buffers, and offset commits.
 class VortexConsumer {
-    var Config ConsumerConfig
+    var Config ConsumerConfig = ConsumerConfig()
     var SubscribedTopics List[string] = List[string]()
     var AssignedPartitions List[TopicPartition] = List[TopicPartition]()
     var Positions Dictionary[string, int64] = Dictionary[string, int64]()
@@ -90,7 +90,7 @@ class VortexConsumer {
             var rec = FetchBuffer[i]
             batch.Add(rec)
 
-            var key string = rec.Topic + ":" + rec.Partition.ToString()
+            var key string = rec.Topic + "-" + rec.Partition.ToString()
             Positions[key] = rec.Offset + 1
         }
 

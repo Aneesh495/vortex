@@ -63,7 +63,7 @@ class Partitioner {
 
 // High-throughput batching producer accumulating messages before wire transmission.
 class VortexProducer {
-    var Config ProducerConfig
+    var Config ProducerConfig = ProducerConfig()
     var Partitioner Partitioner = Partitioner()
     var Metadata Dictionary[string, int32] = Dictionary[string, int32]() // Topic -> NumPartitions
     var Accumulator Dictionary[string, List[Record]] = Dictionary[string, List[Record]]() // "topic:partition" -> records
@@ -93,11 +93,6 @@ class VortexProducer {
 
     // Sends a record directly to a designated partition.
     func SendToPartition(topic string, partition int32, key ([]byte)?, value []byte) RecordMetadata {
-        var rec = Record()
-        rec.Key = key != nil ? key : [0]byte
-        rec.Value = value
-        rec.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
-
         var bucketKey string = topic + ":" + partition.ToString()
         var list List[Record]? = nil
         var found bool = Accumulator.TryGetValue(bucketKey, out list)
@@ -108,6 +103,13 @@ class VortexProducer {
             BucketKeys.Add(bucketKey)
         }
 
+        var rec = Record()
+        rec.Offset = int64(list.Count)
+        rec.Key = key != nil ? key : [0]byte
+        rec.Value = value
+        rec.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+        rec.Headers = List[RecordHeader]()
+
         list.Add(rec)
         AccumulatorBytes[bucketKey] = AccumulatorBytes[bucketKey] + rec.Size()
         SentRecordsCount = SentRecordsCount + 1
@@ -115,7 +117,7 @@ class VortexProducer {
         var meta = RecordMetadata()
         meta.Topic = topic
         meta.Partition = partition
-        meta.Offset = int64(list.Count - 1)
+        meta.Offset = rec.Offset
         meta.Timestamp = rec.Timestamp
         meta.ErrorCode = 0
         return meta
@@ -133,11 +135,14 @@ class VortexProducer {
                 var partition int32 = Convert.ToInt32(parts[1])
 
                 var batch = RecordBatch()
-                batch.BaseOffset = 0
-                batch.Magic = 2
+                batch.BaseOffset = records[0].Offset
+                batch.Magic = byte(2)
                 batch.Attributes = Config.Compression
                 batch.ProducerId = 1
                 batch.ProducerEpoch = 0
+                batch.FirstTimestamp = records[0].Timestamp
+                batch.MaxTimestamp = records[records.Count - 1].Timestamp
+                batch.LastOffsetDelta = int32(records[records.Count - 1].Offset - records[0].Offset)
                 batch.Records = records
 
                 using var ms = MemoryStream()
