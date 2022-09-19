@@ -8,6 +8,7 @@
     <Project Path="src/Vortex.Processing/Vortex.Processing.gsproj" Type="f1526b4d-c1a8-4b42-b2f7-48da6f9ca033" />
     <Project Path="src/Vortex.Replication/Vortex.Replication.gsproj" Type="f1526b4d-c1a8-4b42-b2f7-48da6f9ca033" />
     <Project Path="src/Vortex.Schema/Vortex.Schema.gsproj" Type="f1526b4d-c1a8-4b42-b2f7-48da6f9ca033" />
+    <Project Path="src/Vortex.Server/Vortex.Server.gsproj" Type="f1526b4d-c1a8-4b42-b2f7-48da6f9ca033" />
     <Project Path="src/Vortex.Storage/Vortex.Storage.gsproj" Type="f1526b4d-c1a8-4b42-b2f7-48da6f9ca033" />
   </Folder>
   <Folder Name="/tests/">
