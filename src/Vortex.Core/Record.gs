@@ -39,8 +39,8 @@ class Record {
                 headerBytes = headerBytes + Headers[i].Size()
             }
         }
-        var kLen int32 = Key != nil ? Key.Length : 0
-        var vLen int32 = Value != nil ? Value.Length : 0
+        var kLen int32 = Key.Length
+        var vLen int32 = Value.Length
         return 8 + 8 + 4 + kLen + 4 + vLen + headerBytes
     }
 }
