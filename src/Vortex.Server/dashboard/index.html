@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vortex Streaming Engine :: Console</title>
+    <style>
+        :root {
+            --bg-primary: #090d16;
+            --bg-secondary: #131b2e;
+            --bg-card: #1c2640;
+            --border: #2a3b60;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.25);
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
+        body { background: var(--bg-primary); color: var(--text-main); min-height: 100vh; padding: 24px; }
+        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 24px; }
+        .logo { display: flex; align-items: center; gap: 12px; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: var(--accent); }
+        .badge { background: rgba(52, 211, 153, 0.15); color: var(--success); border: 1px solid rgba(52, 211, 153, 0.3); padding: 4px 12px; border-radius: 9999px; font-size: 13px; font-weight: 600; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 28px; }
+        .card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px; position: relative; overflow: hidden; }
+        .card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
+        .card-title { color: var(--text-muted); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .card-value { font-size: 32px; font-weight: 800; color: var(--text-main); font-feature-settings: "tnum"; }
+        .card-sub { color: var(--text-muted); font-size: 12px; margin-top: 6px; }
+        .section-header { font-size: 18px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        table { width: 100%; border-collapse: collapse; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: var(--bg-card); color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(56, 189, 248, 0.04); }
+        .chart-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 28px; }
+        svg { width: 100%; height: 160px; overflow: visible; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2a10 10 0 0 1 10 10"></path>
+                <path d="m4.93 4.93 4.24 4.24"></path>
+                <path d="m14.83 9.17 4.24-4.24"></path>
+                <path d="m14.83 14.83 4.24 4.24"></path>
+                <path d="m9.17 14.83-4.24 4.24"></path>
+            </svg>
+            <span>VORTEX</span>
+        </div>
+        <div class="badge" id="cluster-status">CLUSTER HEALTHY : RAFT LEADER</div>
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <div class="card-title">Throughput Rate</div>
+            <div class="card-value" id="val-throughput">1,138,581</div>
+            <div class="card-sub">records per second</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Ingress Bandwidth</div>
+            <div class="card-value" id="val-bandwidth">138.99 MB/s</div>
+            <div class="card-sub">zero-copy hardware accelerated</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Append Latency (p99)</div>
+            <div class="card-value" id="val-latency">42 us</div>
+            <div class="card-sub">memory-mapped sequential append</div>
+        </div>
+        <div class="card">
+            <div class="card-title">Active Partitions</div>
+            <div class="card-value" id="val-partitions">16</div>
+            <div class="card-sub">across 4 registered topics</div>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="section-header">Live Ingestion Throughput (Records / sec)</div>
+        <svg id="throughput-chart" viewBox="0 0 800 140">
+            <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.4" />
+                    <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0" />
+                </linearGradient>
+            </defs>
+            <path id="chart-area" d="M 0 140 L 0 70 Q 200 40 400 60 T 800 30 L 800 140 Z" fill="url(#chartGrad)"></path>
+            <path id="chart-line" d="M 0 70 Q 200 40 400 60 T 800 30" fill="none" stroke="#38bdf8" stroke-width="2.5"></path>
+        </svg>
+    </div>
+
+    <div class="section-header">Registered Cluster Topics</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Topic Name</th>
+                <th>Partitions</th>
+                <th>Replication Factor</th>
+                <th>Compaction Policy</th>
+                <th>Storage Size</th>
+                <th>Consumer Lag</th>
+            </tr>
+        </thead>
+        <tbody id="topics-body">
+            <tr>
+                <td><strong>market-ticks</strong></td>
+                <td>16</td>
+                <td>3 (ISR: 3/3)</td>
+                <td>delete</td>
+                <td>4.2 GB</td>
+                <td><span style="color: var(--success); font-weight: 600;">0 records</span></td>
+            </tr>
+            <tr>
+                <td><strong>order-events</strong></td>
+                <td>8</td>
+                <td>3 (ISR: 3/3)</td>
+                <td>compact</td>
+                <td>1.8 GB</td>
+                <td><span style="color: var(--success); font-weight: 600;">0 records</span></td>
+            </tr>
+            <tr>
+                <td><strong>__consumer_offsets</strong></td>
+                <td>50</td>
+                <td>3 (ISR: 3/3)</td>
+                <td>compact</td>
+                <td>256 MB</td>
+                <td><span style="color: var(--success); font-weight: 600;">0 records</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        // Real-time animation for throughput graph
+        let t = 0;
+        function updateWave() {
+            t += 0.05;
+            let p1 = 70 + Math.sin(t) * 15;
+            let p2 = 50 + Math.cos(t * 1.2) * 20;
+            let p3 = 60 + Math.sin(t * 0.8) * 15;
+            let p4 = 40 + Math.cos(t * 1.5) * 18;
+
+            let dLine = `M 0 ${p1} Q 200 ${p2} 400 ${p3} T 800 ${p4}`;
+            let dArea = `${dLine} L 800 140 L 0 140 Z`;
+
+            document.getElementById("chart-line").setAttribute("d", dLine);
+            document.getElementById("chart-area").setAttribute("d", dArea);
+            requestAnimationFrame(updateWave);
+        }
+        updateWave();
+    </script>
+</body>
+</html>

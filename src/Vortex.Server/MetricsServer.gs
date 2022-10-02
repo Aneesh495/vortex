@@ -111,7 +111,22 @@ class EmbeddedHttpServer {
         var raw string? = req.RawUrl
         var path string = raw != nil ? raw : "/"
 
-        if path == "/metrics" {
+        if path == "/" || path == "/dashboard" {
+            var htmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dashboard/index.html")
+            var html = ""
+            if File.Exists(htmlPath) {
+                html = File.ReadAllText(htmlPath)
+            } else if File.Exists("src/Vortex.Server/dashboard/index.html") {
+                html = File.ReadAllText("src/Vortex.Server/dashboard/index.html")
+            } else {
+                html = "<html><body><h1>Vortex Streaming Cluster</h1><p>Online</p></body></html>"
+            }
+            var data []byte = Encoding.UTF8.GetBytes(html)
+            resp.ContentType = "text/html; charset=utf-8"
+            resp.ContentLength64 = int64(data.Length)
+            resp.OutputStream.Write(data, 0, data.Length)
+            resp.Close()
+        } else if path == "/metrics" {
             var text = Metrics.ExportPrometheus()
             var data []byte = Encoding.UTF8.GetBytes(text)
             resp.ContentType = "text/plain; version=0.0.4"
