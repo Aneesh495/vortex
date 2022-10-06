@@ -83,6 +83,7 @@ class PartitionLog {
 
             ActiveSegment.Append(batch)
             NextLogEndOffset = baseOffset + int64(records.Count)
+            HighWatermark = NextLogEndOffset
 
             return LogAppendResult(baseOffset, NextLogEndOffset - 1, records.Count)
         }
