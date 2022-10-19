@@ -37,6 +37,17 @@
         tr:hover td { background: rgba(56, 189, 248, 0.04); }
         .chart-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 28px; }
         svg { width: 100%; height: 160px; overflow: visible; }
+        .intro { color: #bfccda; line-height: 1.6; margin-bottom: 1.5rem; max-width: 72ch; }
+        .intro a { color: #8ce0ff; }
+        .table-scroll { overflow-x: auto; }
+        @media (max-width: 650px) {
+            body { padding: 12px; }
+            header { gap: .75rem; flex-wrap: wrap; }
+            .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+            .card { padding: 12px; min-width: 0; overflow-wrap: anywhere; }
+            .card-value { font-size: clamp(1rem, 6vw, 1.5rem); }
+            table { min-width: 500px; }
+        }
     </style>
 </head>
 <body>
@@ -52,9 +63,10 @@
             </svg>
             <span>VORTEX</span>
         </div>
-        <div class="badge" id="cluster-status">CLUSTER HEALTHY : RAFT LEADER</div>
+        <div class="badge" id="cluster-status">EXAMPLE SNAPSHOT</div>
     </header>
 
+    <p class="intro">Explore a sample broker snapshot. The trace is generated in the browser. The native server exposes actual counters at <code>/metrics</code>. <a href="https://github.com/Aneesh495/vortex/tree/main/src/Vortex.Server">Broker and metrics source</a></p>
     <div class="grid">
         <div class="card">
             <div class="card-title">Throughput Rate</div>
@@ -79,7 +91,7 @@
     </div>
 
     <div class="chart-card">
-        <div class="section-header">Live Ingestion Throughput (Records / sec)</div>
+        <div class="section-header">Illustrative throughput trace</div>
         <svg id="throughput-chart" viewBox="0 0 800 140">
             <defs>
                 <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
@@ -93,7 +105,7 @@
     </div>
 
     <div class="section-header">Registered Cluster Topics</div>
-    <table>
+    <div class="table-scroll"><table>
         <thead>
             <tr>
                 <th>Topic Name</th>
@@ -130,7 +142,7 @@
                 <td><span style="color: var(--success); font-weight: 600;">0 records</span></td>
             </tr>
         </tbody>
-    </table>
+    </table></div>
 
     <script>
         // Real-time animation for throughput graph
@@ -149,7 +161,7 @@
             document.getElementById("chart-area").setAttribute("d", dArea);
             requestAnimationFrame(updateWave);
         }
-        updateWave();
+        if (!matchMedia("(prefers-reduced-motion: reduce)").matches) updateWave();
     </script>
 </body>
 </html>
